@@ -1,0 +1,24 @@
+----------create database-------------
+CREATE DATABASE "postgressdb-1"
+    WITH
+    OWNER = "postgressuser-1"
+    ENCODING = 'UTF8'
+    LOCALE_PROVIDER = 'libc'
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+
+------------create user------------
+CREATE ROLE "postgressuser-1" WITH
+	LOGIN
+	SUPERUSER
+	CREATEDB
+	CREATEROLE
+	INHERIT
+	NOREPLICATION
+	BYPASSRLS
+	CONNECTION LIMIT -1;
+
+-----------DROP------------
+DROP DATABASE tren
+
+----------
