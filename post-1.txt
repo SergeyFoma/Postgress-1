@@ -47,6 +47,21 @@ CREATE TABLE public.book
 ALTER TABLE IF EXISTS public.book
     OWNER to sm_app_user;
 
+    ________________________________
+CREATE TABLE person
+(
+	person_id integer PRIMARY KEY,
+	first_name varchar(64)NOT NULL,
+	last_name varchar(64)NOT NULL
+);
+
+CREATE TABLE passport
+(
+	passport_id integer PRIMARY KEY,
+	serial_number integer NOT NULL,
+	fk_passpor_person integer REFERENCES person(person_id)
+)
+
 ---------------------Вставить данные в таблицу--------------------
 INSERT INTO book
 VALUES
