@@ -36,3 +36,50 @@ CREATE TABLE book
 )
 
 -------------
+CREATE TABLE public.book
+(
+    book_id integer NOT NULL,
+    title text NOT NULL,
+    isbn character varying NOT NULL,
+    CONSTRAINT pk_book_id PRIMARY KEY (book_id)
+);
+
+ALTER TABLE IF EXISTS public.book
+    OWNER to sm_app_user;
+
+---------------------Вставить данные в таблицу--------------------
+INSERT INTO book
+VALUES
+(1, 'asdasd', '123123'),
+(2, 'Zxcxzc xczxczxc', '23423424);
+insesrt INTO sm_app2 VALUES
+(1, 'qweweqw', 'fdf),
+(2, 'vxczvxcv', 'vc');
+
+-----------SELECT---------------
+SELECT * FROM book
+
+-------------------Изменяем(модифицируем)таблицу. Добавим FOREIGN KEY----------------
+ALTER TABLE book
+ADD COLUMN fk_user_id integer;
+
+ALTER TABLE book
+ADD CONSTRAINT fk_book_user
+FOREIGN KEY (fk_user_id) REFERENCES sm_app2(user_id)
+
+-------------Updata table--------------------
+UPDATE book SET fk_user_id=2 WHERE book_id=1;
+UPDATE book SET fk_user_id=3 WHERE book_id=2
+
+----------------Job-----------
+
+https://tver.hh.ru/vacancy/127959995?utm_source=rabota1000.ru&utm_medium=ppc&utm_campaign=dm-aggregators-main_b2c-rf-paid_cpa_applicant_feed
+https://spb.hh.ru/vacancy/128013173?utm_source=rabota1000.ru&utm_medium=ppc&utm_campaign=dm-aggregators-main_b2c-rf-paid_cpa_applicant_feed
+https://rostov.hh.ru/vacancy/127593136?utm_source=rabota1000.ru&utm_medium=ppc&utm_campaign=dm-aggregators-main_b2c-rf-paid_cpa_applicant_feed
+(https://proglib.io/vacancies/junior-python-razrabotchik-django-flask-diasoft-5d67146e-2025-10-30
+)
+https://kazan.hh.ru/vacancy/127787674?utm_source=rabota-ipoisk.ru&utm_medium=ppc&utm_campaign=dm-aggregators-main_b2c-rf-paid_cpc_applicant_feed_magic=1
+https://novyj-urengoy.hh.ru/vacancy/127837488?utm_source=rabota-ipoisk.ru&utm_medium=ppc&utm_campaign=dm-aggregators-main_b2c-rf-paid_cpc_applicant_feed_magic_1
+https://spb.hh.ru/vacancy/127287195?utm_source=rabota-ipoisk.ru&utm_medium=ppc&utm_campaign=dm-aggregators-main_b2c-rf-paid_cpc_applicant_feed_magic_1
+
+https://jobrun.ru/junior-python-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA-django-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0?page=2
