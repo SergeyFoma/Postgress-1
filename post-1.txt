@@ -4106,6 +4106,7 @@ SELECT product_name, unit_price FROM products ORDER BY unit_price DESC;
 SELECT DISTINCT country FROM customers WHERE city NOT IN ('Berlin', 'London')ORDER BY country DESC
 SELECT DISTINCT country, city FROM customers WHERE city NOT IN ('Berlin', 'London')ORDER BY country DESC, city ASC
 SELECT ship_city, order_date FROM ordersWHERE ship_city = 'London' ORDER BY order_date DESC
+SELECT * FROM orders ORDER BY required_date DESC, shipped_date
 
 --------------------------MIN MAX-----------------------------------
 SELECT MIN (order_date) FROM orders WHERE ship_country = 'France'
@@ -4117,6 +4118,121 @@ SELECT AVG(unit_price)FROM products WHERE discontinued <> 1;
 
 ----------------SUM------------------
 SELECT SUM(units_in_stock)FROM products WHERE discontinued !=1;
+
+
+-------------------LIKE-------------------------------------
+LIKE в PostgreSQL — это оператор сравнения, который позволяет 
+искать значения по шаблону с использованием подстановочных символов (wildcards).
+% — заменяет любое количество символов (включая ноль).
+_ — заменяет ровно один символ
+
+SELECT * FROM orders WHERE ship_country LIKE 'F%e'
+SELECT employee_id, last_name, first_name FROM employees WHERE first_name LIKE '_an%'
+
+
+-------------------LIMIT-------------------
+SELECT employee_id, last_name, first_name FROM employees
+WHERE first_name LIKE '%a%'
+ORDER BY last_name DESC
+LIMIT 5
+
+---------------IS NULL, IS NOT NULL----------
+SELECT ship_city, ship_region, ship_country FROM orders
+WHERE ship_region IS NULL LIMIT 10
+
+SELECT ship_city, ship_region, ship_country FROM orders
+WHERE ship_region IS NOT NULL LIMIT 10
+
+--------------------GROUP BY-----------------------
+SELECT ship_country, COUNT(*)
+FROM orders
+WHERE freight > 50
+GROUP BY ship_country
+ORDER BY COUNT(*) DESC
+
+SELECT category_id, SUM(units_in_stock)
+FROM products
+GROUP BY category_id
+ORDER BY SUM(units_in_stock) DESC
+LIMIT 10
+
+SELECT country, COUNT(*) FROM suppliers
+GROUP BY country
+ORDER BY COUNT(*) DESC
+
+---------------------HAVING вторичный фильтр-------------------
+HAVING в PostgreSQL — это оператор, который указывает, какие группы будут включены в выходной результат, 
+то есть выполняет фильтрацию групп.
+В отличие от оператора WHERE, который фильтрует строки перед агрегацией, 
+HAVING применяется после группировки и агрегации. Это позволяет указывать условия на агрегированные результаты, 
+например, с помощью функций SUM(), COUNT(), MAX() или AVG(). 
+
+
+SELECT category_id, SUM(unit_price*units_in_stock)
+FROM products
+WHERE discontinued <> 1
+GROUP BY category_id
+HAVING SUM(unit_price*units_in_stock)>5000
+ORDER BY SUM(unit_price*units_in_stock) DESC
+
+SELECT ship_country, SUM(freight) FROM orders
+WHERE ship_region IS NOT NULL
+GROUP BY ship_country
+HAVING SUM(freight) > 2750 
+ORDER BY SUM(freight)DESC
+
+-----------------------UNION----------------------------
+UNION в PostgreSQL — это оператор, который объединяет результаты двух или более запросов 
+в единый набор строк и столбцов и убирает повторения
+
+SELECT country FROM customers
+UNION
+SELECT country FROM employees
+
+SELECT country FROM customers
+UNION ALL
+SELECT country FROM employees
+
+SELECT country FROM customers
+UNION
+SELECT country FROM suppliers
+ORDER BY country ASC
+
+-------------INTERSECT-----------------
+INTERSECT в PostgreSQL — это оператор пересечения множеств, 
+который возвращает общие данные из первого и второго запроса.
+Если запись существует в обоих наборах данных, она будет включена в результаты INTERSECT. 
+Если запись существует в одном наборе данных, а не в другом, она будет опущена в результатах INTERSECT. 
+
+SELECT country FROM customers
+INTERSECT
+SELECT country FROM employees
+
+SELECT country FROM customers
+INTERSECT
+SELECT country FROM suppliers
+INTERSECT
+SELECT country FROM employees
+
+--------------------EXCEPT-------------------------------
+EXCEPT в PostgreSQL — это оператор, который возвращает все строки, 
+которые есть в результате первого запроса, но отсутствуют в результате второго. 
+То есть это разница между двумя запросами.
+
+SELECT country FROM customers
+EXCEPT
+SELECT country FROM employees
+
+
+-------------------------EXCEPT ALL -------------------------
+EXCEPT ALL— ключевое слово в PostgreSQL, которое возвращает все строки из первого запроса, включая дубликаты, 
+которые не присутствуют во втором. Это отличается от оператора EXCEPT, который удаляет дубликаты
+
+
+SELECT country FROM customers
+EXCEPT ALL
+SELECT country FROM employees
+
 
 
 ----------------Job-----------
