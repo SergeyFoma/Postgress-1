@@ -4234,6 +4234,75 @@ EXCEPT ALL
 SELECT country FROM employees
 
 
+-------------------------------JOIN---------------------------
+--------INNER JOIN ---------------------------------
+— возвращает строки, когда есть совпадение в обеих таблицах.
+
+SELECT product_name, suppliers.company_name, products.units_in_stock
+FROM products
+INNER JOIN suppliers ON products.supplier_id=suppliers.supplier_id
+ORDER BY units_in_stock DESC
+
+SELECT categories.category_name, SUM(products.units_in_stock)
+FROM products
+INNER JOIN categories ON products.category_id = categories.category_id
+GROUP BY category_name
+ORDER BY SUM(products.units_in_stock) DESC
+LIMIT 6
+
+SELECT categories.category_name, SUM(products.unit_price*products.units_in_stock)
+FROM products
+INNER JOIN categories ON products.category_id=categories.category_id
+WHERE products.discontinued <> 1
+GROUP BY categories.category_name
+HAVING SUM(products.unit_price*products.units_in_stock)>5000
+ORDER BY SUM(products.unit_price*products.units_in_stock)DESC
+
+SELECT orders.order_date, products.product_name, orders.ship_country, products.unit_price, order_details.quantity, order_details.discount
+FROM orders
+INNER JOIN order_details ON orders.order_id=order_details.order_id
+INNER JOIN products ON order_details.product_id=products.product_id
+
+
+---------------LEFT JOIN --------------------------------
+— возвращает все строки из левой таблицы и совпадающие строки из правой таблицы
+
+SELECT suppliers.company_name, products.product_name
+FROM suppliers
+LEFT JOIN products ON products.supplier_id=suppliers.supplier_id
+
+------------------RIGHT JOIN-------------------
+SELECT products.product_name, suppliers.company_name, suppliers.region
+FROM products
+RIGHT JOIN suppliers ON suppliers.supplier_id=products.supplier_id
+WHERE region IS NOT NULL
+ORDER BY region DESC
+LIMIT 10
+
+-------------------SELF JOIN------------------------
+Самосоединение (self join) в PostgreSQL — это тип соединения, 
+при котором таблица соединяется сама с собой. Это не встроенная функция, 
+а техника, которая позволяет сравнивать строки в одной таблице, 
+например, устанавливать иерархические отношения или находить связанные записи.
+
+CREATE TABLE table_self_join(
+	tab_id INT PRIMARY KEY,
+	first_name VARCHAR(255) NOT NULL,
+	manager_id INT,
+	FOREIGN KEY (manager_id)REFERENCES table_self_join(tab_id)
+);
+
+
+ALTER TABLE table_self_join ADD COLUMN last_name VARCHAR(255)
+
+UPDATE table_self_join SET last_name='Zodo' WHERE tab_id=5;
+
+SELECT t.first_name||' '||t.last_name AS table_self_join,
+	m.first_name||' '||m.last_name AS manager	
+FROM table_self_join t
+LEFT JOIN table_self_join m ON m.tab_id=t.tab_id
+
+
 
 ----------------Job-----------
 
