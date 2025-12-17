@@ -4303,6 +4303,51 @@ FROM table_self_join t
 LEFT JOIN table_self_join m ON m.tab_id=t.tab_id
 
 
+---------------USING------------------
+USING — ключевое слово в PostgreSQL, которое сокращает запись условия соединения в ситуации, 
+когда с обеих сторон соединения столбцы имеют одинаковые имена.
+
+SELECT orders.customer_id, employees.employee_id
+FROM orders
+JOIN employees USING(employee_id)
+
+SELECT orders.customer_id, employees.employee_id, orders.ship_country
+FROM orders
+JOIN employees USING(employee_id)
+WHERE ship_country='France' OR ship_country='USA'
+ORDER BY ship_country ASC
+
+
+----------------AS---------------------
+SELECT COUNT(DISTINCT(ship_country)) AS count_country
+FROM orders
+
+SELECT product_name, SUM(units_in_stock) AS uns
+FROM products
+WHERE units_in_stock<>0
+GROUP BY product_name
+ORDER BY uns DESC
+LIMIT 5
+
+SELECT product_name, SUM(unit_price*units_in_stock) AS uns
+FROM products
+WHERE units_in_stock<>0
+GROUP BY product_name
+HAVING SUM(unit_price*units_in_stock)<5000
+ORDER BY uns DESC
+LIMIT 5
+
+-----------------------CONCAT-----------------------------
+
+SELECT c.city, c.company_name, CONCAT(e.first_name,' ', e.last_name), e.city
+FROM orders AS o
+INNER JOIN customers AS c USING(customer_id)
+INNER JOIN employees AS e USING(employee_id)
+INNER JOIN shippers AS s ON o.ship_via=s.shipper_id
+WHERE c.city='London' AND e.city='London'AND s.company_name='Speedy Express'
+
+
+
 
 ----------------Job-----------
 
